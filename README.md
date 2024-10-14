@@ -26,10 +26,11 @@ See the ``docker-compose.yml`` file for details.
 docker run -d -p 8080:8080 --name locket-backend-container locket-backend:latest
 ````
 
-Containers for both services will be launched. The project can be reached at http://localhost:8000.
+Containers for both services will be launched. The project can be reached at http://localhost:8080.
 
-Hot-reloading is enabled (i.e. changes to the Java code in the project will cause the application to restart so that they 
-can be used.)
+### Explanation of the Sections:
+- **Swagger Documentation**: http://localhost:8080/swagger-ui/index.html#/
+
 
 
 
