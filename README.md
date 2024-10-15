@@ -2,7 +2,7 @@
 
 ![](https://github.com/flavours/documentation/workflows/CI/badge.svg)
 
-## Quick start
+## Quick start project
 
 ### Clone the repository
 
