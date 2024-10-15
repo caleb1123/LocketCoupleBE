@@ -9,15 +9,23 @@ jobs:
     env:
       CONTAINER_NAME: myappCommandContainer
     steps:
+      # Check out the code from the repository
       - uses: actions/checkout@v3
       
+      # Build Docker image
       - name: Build Docker Image
-        run: docker build -t myapp:latest -f ./Dockerfile .
+        run: |
+          echo ":: Building Docker image..."
+          docker build -t myapp:latest -f ./Dockerfile .
       
+      # List Docker images
       - name: List Docker Images
-        run: docker images
+        run: |
+          echo ":: Listing Docker images..."
+          docker images
 
-      - name: Manage Docker Container and Build
+      # Manage Docker container and build
+      - name: Manage Docker Container
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
           
@@ -37,6 +45,19 @@ jobs:
           else
               echo ":: No existing container named $CNAME"
           fi
+
           # Run new container
           echo ":: Running new container - $CNAME"
           docker run -d -p 8080:8080 --name $CNAME myapp:latest
+
+      # Optionally, you can add a step to verify if the container is running
+      - name: Verify Container Status
+        run: |
+          CNAME=${{ env.CONTAINER_NAME }}
+          echo ":: Checking the status of the container - $CNAME"
+          if [ "$(docker ps -q -f name=$CNAME)" ]; then
+              echo ":: Container $CNAME is running."
+          else
+              echo ":: Container $CNAME is not running."
+              exit 1 # Fail the job if the container is not running
+          fi
