@@ -10,10 +10,6 @@ jobs:
       CONTAINER_NAME: myappCommandContainer
     steps:
       - uses: actions/checkout@v3
-      
-      # Thêm bước này nếu cần thêm user vào nhóm docker (có thể cần khởi động lại runner sau khi thực hiện)
-      - name: Add user to docker group
-        run: sudo usermod -aG docker $USER
 
       - name: Build Docker Image
         run: sudo docker build -t myapp:latest -f ./Dockerfile .
