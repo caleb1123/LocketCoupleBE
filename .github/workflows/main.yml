@@ -10,12 +10,17 @@ jobs:
       CONTAINER_NAME: myappCommandContainer
     steps:
       - uses: actions/checkout@v3
+      
       - name: Build Docker Image
         run: docker build -t myapp:latest -f ./Dockerfile .
+      
+      - name: List Docker Images
+        run: docker images
+
       - name: Manage Docker Container and Build
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
-
+          
           # Check if the container exists
           if [ "$(docker ps -aq -f name=$CNAME)" ]; then
               if [ "$(docker ps -aq -f status=exited -f name=$CNAME)" ]; then
@@ -32,6 +37,7 @@ jobs:
           else
               echo ":: No existing container named $CNAME"
           fi
+
           # Run new container
           echo ":: Running new container - $CNAME"
           docker run -d -p 8080:8080 --name $CNAME myapp:latest
