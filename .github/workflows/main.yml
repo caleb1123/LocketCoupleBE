@@ -37,7 +37,6 @@ jobs:
           else
               echo ":: No existing container named $CNAME"
           fi
-
           # Run new container
           echo ":: Running new container - $CNAME"
           docker run -d -p 8080:8080 --name $CNAME myapp:latest
