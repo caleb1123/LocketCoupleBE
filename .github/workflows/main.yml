@@ -10,29 +10,28 @@ jobs:
       CONTAINER_NAME: myappCommandContainer
     steps:
       - uses: actions/checkout@v3
-
       - name: Build Docker Image
-        run: sudo docker build -t myapp:latest -f ./Dockerfile .
-      
+        run: docker build -t myapp:latest -f ./Dockerfile .
       - name: Manage Docker Container and Build
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
+
           # Check if the container exists
-          if [ "$(sudo docker ps -aq -f name=$CNAME)" ]; then
-              if [ "$(sudo docker ps -aq -f status=exited -f name=$CNAME)" ]; then
+          if [ "$(docker ps -aq -f name=$CNAME)" ]; then
+              if [ "$(docker ps -aq -f status=exited -f name=$CNAME)" ]; then
                   echo ":: Container $CNAME exists and is exited"
                   echo ":: Removing exited container - $CNAME"
-                  sudo docker rm $CNAME
+                  docker rm $CNAME
               else
                   echo ":: Container $CNAME exists and is running"
                   echo ":: Stopping running container - $CNAME"
-                  sudo docker stop $CNAME
+                  docker stop $CNAME
                   echo ":: Removing stopped container - $CNAME"
-                  sudo docker rm $CNAME
+                  docker rm $CNAME
               fi
           else
               echo ":: No existing container named $CNAME"
           fi
           # Run new container
           echo ":: Running new container - $CNAME"
-          sudo docker run -d -p 8080:8080 --name $CNAME myapp:latest
+          docker run -d -p 8080:8080 --name $CNAME myapp:latest
