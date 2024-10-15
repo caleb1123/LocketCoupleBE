@@ -346,5 +346,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //
 //        return accountConverter.toDTO(createAccount);
 //    }
-
+        public  void print(){
+            System.out.println("Hello");
+        }
 }
