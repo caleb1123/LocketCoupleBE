@@ -9,34 +9,55 @@ jobs:
     env:
       CONTAINER_NAME: myappCommandContainer
     steps:
+      # Check out the code from the repository
       - uses: actions/checkout@v3
       
-      # Thêm bước này nếu cần thêm user vào nhóm docker (có thể cần khởi động lại runner sau khi thực hiện)
-      - name: Add user to docker group
-        run: sudo usermod -aG docker $USER
-
+      # Build Docker image
       - name: Build Docker Image
-        run: sudo docker build -t myapp:latest -f ./Dockerfile .
+        run: |
+          echo ":: Building Docker image..."
+          docker build -t myapp:latest -f ./Dockerfile .
       
-      - name: Manage Docker Container and Build
+      # List Docker images
+      - name: List Docker Images
+        run: |
+          echo ":: Listing Docker images..."
+          docker images
+
+      # Manage Docker container and build
+      - name: Manage Docker Container
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
+          
           # Check if the container exists
-          if [ "$(sudo docker ps -aq -f name=$CNAME)" ]; then
-              if [ "$(sudo docker ps -aq -f status=exited -f name=$CNAME)" ]; then
+          if [ "$(docker ps -aq -f name=$CNAME)" ]; then
+              if [ "$(docker ps -aq -f status=exited -f name=$CNAME)" ]; then
                   echo ":: Container $CNAME exists and is exited"
                   echo ":: Removing exited container - $CNAME"
-                  sudo docker rm $CNAME
+                  docker rm $CNAME
               else
                   echo ":: Container $CNAME exists and is running"
                   echo ":: Stopping running container - $CNAME"
-                  sudo docker stop $CNAME
+                  docker stop $CNAME
                   echo ":: Removing stopped container - $CNAME"
-                  sudo docker rm $CNAME
+                  docker rm $CNAME
               fi
           else
               echo ":: No existing container named $CNAME"
           fi
+
           # Run new container
           echo ":: Running new container - $CNAME"
-          sudo docker run -d -p 8080:8080 --name $CNAME myapp:latest
+          docker run -d -p 8080:8080 --name $CNAME myapp:latest
+
+      # Optionally, you can add a step to verify if the container is running
+      - name: Verify Container Status
+        run: |
+          CNAME=${{ env.CONTAINER_NAME }}
+          echo ":: Checking the status of the container - $CNAME"
+          if [ "$(docker ps -q -f name=$CNAME)" ]; then
+              echo ":: Container $CNAME is running."
+          else
+              echo ":: Container $CNAME is not running."
+              exit 1 # Fail the job if the container is not running
+          fi
