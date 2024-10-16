@@ -6,6 +6,8 @@ import java.util.Date;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
     private int userId;
     private String fullName;
@@ -16,6 +18,5 @@ public class UserDTO {
     private Boolean sex;
     private String phone;
     private Date createdDate;
-    private Date updatedDate;
     private boolean active;
 }

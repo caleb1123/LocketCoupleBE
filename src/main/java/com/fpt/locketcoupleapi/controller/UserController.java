@@ -2,7 +2,9 @@ package com.fpt.locketcoupleapi.controller;
 
 import com.fpt.locketcoupleapi.entity.User;
 import com.fpt.locketcoupleapi.exception.AppException;
+import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
 import com.fpt.locketcoupleapi.payload.request.AuthenticationRequest;
+import com.fpt.locketcoupleapi.payload.request.UserUpdateResquest;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
 import com.fpt.locketcoupleapi.payload.response.AuthenticationResponse;
 import com.fpt.locketcoupleapi.payload.response.FindUserResponse;
@@ -95,4 +97,44 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<ApiResponse<UserDTO>> updateProfile(@RequestBody UserUpdateResquest user) {
+        try {
+            // Attempt to authenticate the user
+            UserDTO updatedUser = userService.updateMyInfor(user);
+
+            // Create success response
+            ApiResponse<UserDTO> response = ApiResponse.<UserDTO>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("User updated")
+                    .data(updatedUser)
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (AppException e) {
+            // Handle known exceptions and return a response with the same type
+            ApiResponse<UserDTO> errorResponse = ApiResponse.<UserDTO>builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .message(e.getMessage())
+                    .data(null) // Keeping the data field null as per requirement
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
+        } catch (Exception e) {
+            // Handle generic exceptions
+            ApiResponse<UserDTO> errorResponse = ApiResponse.<UserDTO>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+
+
 }
