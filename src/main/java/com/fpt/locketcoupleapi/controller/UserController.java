@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.MessagingException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -135,6 +136,126 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<String>> deleteProfile() {
+        try {
+            // Attempt to authenticate the user
+            String message = userService.removeUser();
 
+            // Create success response
+            ApiResponse<String> response = ApiResponse.<String>builder()
+                    .code(HttpStatus.OK.value())
+                    .message(message)
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (AppException e) {
+            // Handle known exceptions and return a response with the same type
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .message(e.getMessage())
+                    .data(null) // Keeping the data field null as per requirement
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
+        } catch (Exception e) {
+            // Handle generic exceptions
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<ApiResponse<String>> sendOTP(@RequestParam String email) {
+        try {
+            // Call the service to create and send the OTP
+            userService.createandsendOTP(email);
+
+            // Create a success response
+            ApiResponse<String> response = ApiResponse.<String>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("OTP has been sent to your email.")
+                    .data(null) // No data returned
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (MessagingException e) {
+            // Handle email sending error
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("Unable to send OTP. Please try again.")
+                    .data(null) // Keeping the data field null as per requirement
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+
+        } catch (AppException e) {
+            // Handle known exceptions
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .message(e.getMessage())
+                    .data(null) // Keeping the data field null as per requirement
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
+        } catch (Exception e) {
+            // Handle generic exceptions
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred.")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<ApiResponse<String>> verifyOtp(@RequestParam String message,String otp) {
+        try {
+            // Xác thực OTP
+            boolean isVerified = userService.verifyOTP(message,otp);
+
+            if (isVerified) {
+                return ResponseEntity.ok(ApiResponse.<String>builder()
+                        .code(HttpStatus.OK.value())
+                        .message("OTP verified successfully! Your account is now active.")
+                        .data(null)
+                        .build());
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<String>builder()
+                        .code(HttpStatus.UNAUTHORIZED.value())
+                        .message("Invalid or expired OTP.")
+                        .data(null)
+                        .build());
+            }
+
+        } catch (AppException e) {
+            // Xử lý ngoại lệ đã biết
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.<String>builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build());
+
+        } catch (Exception e) {
+            // Xử lý ngoại lệ chung
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred.")
+                    .data(null)
+                    .build());
+        }
+    }
 
 }
