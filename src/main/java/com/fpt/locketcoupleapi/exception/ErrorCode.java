@@ -49,7 +49,8 @@ public enum ErrorCode {
     AUCTION_NOT_ONGOING(1040,"Auction is not ongoing",HttpStatus.BAD_REQUEST),
     ROLE_NOT_FOUND(1042,"Role not found",HttpStatus.NOT_FOUND),
     ACCOUNT_INACTIVE(1041, "Account has not been activated", HttpStatus.FORBIDDEN),
-    USER_NOT_ACTIVE(101, "User is not active", HttpStatus.FORBIDDEN);
+    USER_NOT_ACTIVE(101, "User is not active", HttpStatus.FORBIDDEN),
+    COUPLE_NOT_FOUND(1043, "Couple not found", HttpStatus.NOT_FOUND);
 
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

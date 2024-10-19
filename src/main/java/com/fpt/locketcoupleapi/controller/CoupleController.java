@@ -51,4 +51,38 @@ public class CoupleController {
         }
     }
 
+    @PostMapping("/acceptRequest/{requestId}")
+    public ResponseEntity<ApiResponse<String>> acceptRequest(@PathVariable int requestId) {
+        try {
+            // Gọi service để chấp nhận yêu cầu kết bạn
+            coupleService.acceptRequest(requestId);
+
+            // Tạo phản hồi thành công
+            ApiResponse<String> response = ApiResponse.<String>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Accepted request successfully")
+                    .data(null) // Không có dữ liệu trả về
+                    .build();
+
+            // Trả về phản hồi thành công
+            return ResponseEntity.ok(response);
+        } catch (AppException e) {
+            // Tạo phản hồi khi gặp lỗi ứng dụng, ví dụ: yêu cầu không tồn tại
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (Exception e) {
+            // Tạo phản hồi khi gặp lỗi không xác định
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An error occurred")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
 }
