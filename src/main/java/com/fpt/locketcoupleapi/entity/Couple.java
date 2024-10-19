@@ -3,6 +3,7 @@ package com.fpt.locketcoupleapi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,10 +34,10 @@ public class Couple {
     private String coupleAvatar;
 
     @Column
-    private Date createdDate;
+    private LocalDateTime createdDate;
 
     @Column
-    private boolean status;
+    private EStatus status;
 
     @OneToMany(mappedBy = "couple")
     private List<Photo> photos;

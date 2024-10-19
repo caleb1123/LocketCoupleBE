@@ -63,11 +63,30 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignUpResponse>> signUp(@RequestBody SignUpRequest signUpRequest) {
-        // Gọi service để thực hiện đăng ký
-        ApiResponse<SignUpResponse> response = authenticationService.signUp(signUpRequest);
+        try {
+            // Gọi service để thực hiện đăng ký
+            ApiResponse<SignUpResponse> response = authenticationService.signUp(signUpRequest);
 
-        // Trả về phản hồi với mã trạng thái 201 (Created)
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            // Trả về phản hồi với mã trạng thái 201 (Created) nếu đăng ký thành công
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (AppException e) {
+            // Xử lý lỗi ứng dụng, ví dụ: tên người dùng đã tồn tại
+            ApiResponse<SignUpResponse> errorResponse = ApiResponse.<SignUpResponse>builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(null) // Không có dữ liệu trả về khi có lỗi
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (Exception e) {
+            // Xử lý các lỗi không xác định khác
+            ApiResponse<SignUpResponse> errorResponse = ApiResponse.<SignUpResponse>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An error occurred during signup")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
+
 
 }
