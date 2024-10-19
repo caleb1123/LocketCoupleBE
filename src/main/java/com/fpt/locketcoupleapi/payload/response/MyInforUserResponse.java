@@ -19,4 +19,5 @@ public class MyInforUserResponse {
     private String email;
     private Boolean sex;
     private String phone;
+    private String avatarUrl;
 }

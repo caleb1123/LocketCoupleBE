@@ -38,6 +38,9 @@ public class User {
     private String email;
 
     @Column
+    private String avatarUrl;
+
+    @Column
     private ESex sex;
 
     @Column(unique = true)
