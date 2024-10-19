@@ -29,7 +29,7 @@ docker run -d -p 8080:8080 --name locket-backend-container locket-backend:latest
 Containers for both services will be launched. The project can be reached at http://localhost:8080.
 
 ### Explanation of the Sections:
-- **Swagger Documentation**: http://52.200.54.20:8080/swagger-ui/index.html
+- **Swagger Documentation**: https://locketcouplebe-production.up.railway.app/swagger-ui/index.html#
 
 
 
