@@ -12,6 +12,6 @@ public class UserUpdateResquest {
     private String address;
     private String dob;
     private String email;
-    private Boolean sex;
+    private String sex;
     private String phone;
 }

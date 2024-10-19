@@ -13,7 +13,7 @@ public class SignUpResponse {
     private String address;
     private String dob;
     private String email;
-    private Boolean sex;
+    private String sex;
     private String phone;
     private Date createdDate;
     private Date updatedDate;

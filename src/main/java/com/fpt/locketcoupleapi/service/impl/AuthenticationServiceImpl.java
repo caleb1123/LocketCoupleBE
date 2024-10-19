@@ -163,7 +163,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
         newUser.setPassword(encodedPassword);
-
+        newUser.setActive(true);
         // Lưu người dùng mới vào cơ sở dữ liệu
         accountRepository.save(newUser);
 
@@ -175,7 +175,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .address(newUser.getAddress())
                 .dob(newUser.getDob())
                 .email(newUser.getEmail())
-                .sex(newUser.getSex())
+                .sex(String.valueOf(newUser.getSex()))
                 .phone(newUser.getPhone())
                 .createdDate(newUser.getCreatedDate())
                 .updatedDate(newUser.getUpdatedDate())

@@ -38,7 +38,7 @@ public class User {
     private String email;
 
     @Column
-    private Boolean sex;
+    private ESex sex;
 
     @Column(unique = true)
     private String phone;

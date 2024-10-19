@@ -19,16 +19,6 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
             "/account/**",
             "/auth/**",
-            "/jewelry/**",
-            "/request/**",
-            "/auction/**",
-            "/bid/**",
-            "/posts/**",
-            "/postCategory/**",
-            "/jewelryCategory/**",
-            "/payment/**",
-            "/jewelryImage/**",
-            "/postImage/**",
             "/swagger-ui/**",  // Thêm endpoint Swagger UI
             "/v3/api-docs/**"   // Thêm endpoint API docs
     };

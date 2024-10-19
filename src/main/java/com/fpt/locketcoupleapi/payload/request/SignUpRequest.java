@@ -9,6 +9,6 @@ public class SignUpRequest {
     private String userName;
     private String password;
     private String email;
-    private Boolean sex;
+    private String sex;
     private String phone;
 }

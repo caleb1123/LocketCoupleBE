@@ -1,5 +1,6 @@
 package com.fpt.locketcoupleapi.service.impl;
 
+import com.fpt.locketcoupleapi.entity.ESex;
 import com.fpt.locketcoupleapi.entity.User;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.exception.ErrorCode;
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userDTO.getPhone());
         }
         if (userDTO.getSex() != null) {
-            user.setSex(userDTO.getSex());
+            user.setSex(ESex.valueOf(userDTO.getSex()));
         }
         if (userDTO.getEmail() != null) {
             user.setEmail(userDTO.getEmail());
@@ -97,7 +98,7 @@ public class UserServiceImpl implements UserService {
         userDTO1.setPhone(user.getPhone());
         userDTO1.setEmail(user.getEmail());
         userDTO1.setDob(user.getDob());
-        userDTO1.setSex(user.getSex());
+        userDTO1.setSex(String.valueOf(user.getSex()));
         userDTO1.setActive(user.isActive());
         return userDTO1;
     }
