@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
         response.setFullName(user.getFullName());
         response.setUserName(user.getUserName());
         response.setAddress(user.getAddress());
-        response.setPhone(user.getPhone());
         response.setEmail(user.getEmail());
         return response;
 
@@ -54,9 +53,10 @@ public class UserServiceImpl implements UserService {
         response.setFullName(user.getFullName());
         response.setUserName(user.getUserName());
         response.setAddress(user.getAddress());
-        response.setPhone(user.getPhone());
         response.setEmail(user.getEmail());
         response.setAvatarUrl(user.getAvatarUrl());
+        response.setDob(user.getDob());
+        response.setSex(String.valueOf(user.getSex()));
         return response;
     }
 
@@ -76,9 +76,6 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getAddress() != null) {
             user.setAddress(userDTO.getAddress());
         }
-        if (userDTO.getPhone() != null) {
-            user.setPhone(userDTO.getPhone());
-        }
         if (userDTO.getSex() != null) {
             user.setSex(ESex.valueOf(userDTO.getSex()));
         }
@@ -96,7 +93,6 @@ public class UserServiceImpl implements UserService {
         userDTO1.setFullName(user.getFullName());
         userDTO1.setUserName(user.getUserName());
         userDTO1.setAddress(user.getAddress());
-        userDTO1.setPhone(user.getPhone());
         userDTO1.setEmail(user.getEmail());
         userDTO1.setDob(user.getDob());
         userDTO1.setSex(String.valueOf(user.getSex()));

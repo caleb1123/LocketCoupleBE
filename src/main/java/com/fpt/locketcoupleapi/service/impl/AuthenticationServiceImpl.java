@@ -176,7 +176,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .dob(newUser.getDob())
                 .email(newUser.getEmail())
                 .sex(String.valueOf(newUser.getSex()))
-                .phone(newUser.getPhone())
                 .createdDate(newUser.getCreatedDate())
                 .updatedDate(newUser.getUpdatedDate())
                 .active(newUser.isActive())

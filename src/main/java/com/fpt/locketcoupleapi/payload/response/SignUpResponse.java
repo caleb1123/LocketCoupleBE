@@ -14,7 +14,6 @@ public class SignUpResponse {
     private String dob;
     private String email;
     private String sex;
-    private String phone;
     private Date createdDate;
     private Date updatedDate;
     private boolean active;

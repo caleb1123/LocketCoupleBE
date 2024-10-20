@@ -43,9 +43,6 @@ public class User {
     @Column
     private ESex sex;
 
-    @Column(unique = true)
-    private String phone;
-
     @Column
     private Date createdDate;
 

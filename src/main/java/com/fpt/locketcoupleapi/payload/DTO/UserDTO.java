@@ -16,7 +16,6 @@ public class UserDTO {
     private String dob;
     private String email;
     private String sex;
-    private String phone;
     private Date createdDate;
     private boolean active;
 }
