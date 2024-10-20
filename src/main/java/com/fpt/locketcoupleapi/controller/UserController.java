@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessagingException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/auth")
@@ -255,6 +258,53 @@ public class UserController {
                     .message("An unexpected error occurred.")
                     .data(null)
                     .build());
+        }
+    }
+
+    @PostMapping("/change-avt")
+    public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("file") MultipartFile file) {
+        try {
+            // Call the service to upload the image to Cloudinary
+            String avatarUrl = userService.uploadImageToCloudinary(file);
+
+            // Create success response
+            ApiResponse<String> response = ApiResponse.<String>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Avatar updated successfully")
+                    .data(avatarUrl) // Return the new avatar URL
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (AppException e) {
+            // Handle known exceptions and return a response with the same type
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .message(e.getMessage())
+                    .data(null) // Keeping the data field null as per requirement
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
+        } catch (IOException e) {
+            // Handle file upload related exceptions
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("Failed to upload avatar. Please try again.")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+
+        } catch (Exception e) {
+            // Handle generic exceptions
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
