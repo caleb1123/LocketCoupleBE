@@ -14,4 +14,6 @@ public interface CoupleService {
         List<CoupleDTO> getAllCouple();
 
         SendRequestResponse getMyCoupleByPending();
+
+        void CancelRequest(int requestId);
 }

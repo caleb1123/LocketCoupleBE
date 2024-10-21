@@ -143,5 +143,24 @@ public class CoupleServiceImpl implements CoupleService {
         return userDTOs;
     }
 
+    @Override
+    public void CancelRequest(int requestId) {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Couple couple = coupleRepository.findById(requestId)
+                .orElseThrow(() -> new AppException(ErrorCode.COUPLE_NOT_FOUND));
+        if(couple.getUserGirlfriend().getUserId() == user.getUserId()) {
+            couple.setStatus(EStatus.DECLINED);
+        }else if(couple.getUserBoyfriend().getUserId() == user.getUserId()) {
+            couple.setStatus(EStatus.DECLINED);
+        }else {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        coupleRepository.save(couple);
+
+    }
+
 
 }

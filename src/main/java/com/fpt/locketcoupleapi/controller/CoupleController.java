@@ -1,5 +1,6 @@
 package com.fpt.locketcoupleapi.controller;
 
+import com.cloudinary.Api;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
@@ -157,6 +158,40 @@ public class CoupleController {
                     .data(null)
                     .build();
 
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PostMapping("/CancelRequest/{requestId}")
+    public ResponseEntity<ApiResponse<String>> CancelRequest(@PathVariable int requestId) {
+        try {
+            // Gọi service để hủy yêu cầu kết bạn
+            coupleService.CancelRequest(requestId);
+
+            // Tạo phản hồi thành công
+            ApiResponse<String> response = ApiResponse.<String>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Cancel request successfully")
+                    .data(null) // Không có dữ liệu trả về
+                    .build();
+
+            // Trả về phản hồi thành công
+            return ResponseEntity.ok(response);
+        } catch (AppException e) {
+            // Tạo phản hồi khi gặp lỗi ứng dụng, ví dụ: yêu cầu không tồn tại
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (Exception e) {
+            // Tạo phản hồi khi gặp lỗi không xác định
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An error occurred")
+                    .data(null)
+                    .build();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
