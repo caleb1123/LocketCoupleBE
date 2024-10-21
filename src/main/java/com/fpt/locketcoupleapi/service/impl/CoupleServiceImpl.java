@@ -8,6 +8,7 @@ import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.exception.ErrorCode;
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
+import com.fpt.locketcoupleapi.payload.response.SendRequestResponse;
 import com.fpt.locketcoupleapi.repository.CoupleRepository;
 import com.fpt.locketcoupleapi.repository.UserRepository;
 import com.fpt.locketcoupleapi.service.CoupleService;
@@ -36,8 +37,29 @@ public class CoupleServiceImpl implements CoupleService {
         String name = context.getAuthentication().getName();
         User sender = userRepository.findByUserName(name)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if(sender.getUserId() == userId) {
+            throw new AppException(ErrorCode.MY_INFOR);
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        long count;
+        if(sender.getSex() == ESex.MALE){
+
+            count = coupleRepository.countCouplesByUserBoyfriend_UserIdAndStatus(sender.getUserId(), EStatus.PENDING);
+
+        }else if(sender.getSex() == ESex.FEMALE){
+            count = coupleRepository.countCouplesByUserGirlfriend_UserIdAndStatus(sender.getUserId(), EStatus.PENDING);
+        }else if(sender.getSex() == ESex.OTHER) {
+            count = coupleRepository.countCouplesByUserBoyfriend_UserIdAndStatus(sender.getUserId(), EStatus.PENDING);
+            if (count == 0) {
+                count = coupleRepository.countCouplesByUserGirlfriend_UserIdAndStatus(sender.getUserId(), EStatus.PENDING);
+            }
+        }else {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        if(count >=1 ) {
+            throw new AppException(ErrorCode.COUPLE_EXISTED);
+        }
 
         Couple couple = new Couple();
         if(sender.getSex() == ESex.MALE) {
@@ -49,6 +71,7 @@ public class CoupleServiceImpl implements CoupleService {
         }
         couple.setStatus(EStatus.PENDING);
         couple.setCreatedDate(LocalDateTime.now());
+        couple.setSenderSex(sender.getSex());
         coupleRepository.save(couple);
 
 
@@ -88,31 +111,34 @@ public class CoupleServiceImpl implements CoupleService {
     }
 
     @Override
-    public List<UserDTO> getMyCoupleByPending() {
+    public SendRequestResponse getMyCoupleByPending() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
         User user = userRepository.findByUserName(name)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        List<Couple> couples = new ArrayList<>();
+        Couple couples = new Couple();
 
         // Check user's sex and find couples accordingly
         if (user.getSex() == ESex.MALE || user.getSex() == ESex.FEMALE) {
             couples = coupleRepository.findCouplesByUserBoyfriend_UserId(user.getUserId());
         } else if (user.getSex() == ESex.OTHER) {
             couples = coupleRepository.findCouplesByUserBoyfriend_UserId(user.getUserId());
-            if (couples.isEmpty()) {
+            if (couples == null) {
                 couples = coupleRepository.findCouplesByUserGirlfriend_UserId(user.getUserId());
             }
         }
 
         // Check if couples list is empty
-        if (couples.isEmpty()) {
+        if (couples == null) {
             throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
         }
-
-        List<UserDTO> userDTOs = new ArrayList<>();
-        userDTOs.add(modelMapper.map(couples.get(0).getUserBoyfriend(), UserDTO.class));
+        if(couples.getSenderSex() == user.getSex()) {
+            throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
+        }
+        SendRequestResponse userDTOs = modelMapper.map(couples,SendRequestResponse.class);
+        userDTOs.setUserId(user.getUserId());
+        userDTOs.setCoupleId(couples.getCoupleId());
         // Map each Couple to CoupleDTO
         return userDTOs;
     }

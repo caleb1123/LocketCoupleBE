@@ -2,6 +2,7 @@ package com.fpt.locketcoupleapi.service;
 
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
+import com.fpt.locketcoupleapi.payload.response.SendRequestResponse;
 
 import java.util.List;
 
@@ -12,5 +13,5 @@ public interface CoupleService {
 
         List<CoupleDTO> getAllCouple();
 
-        List<UserDTO> getMyCoupleByPending();
+        SendRequestResponse getMyCoupleByPending();
 }

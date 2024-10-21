@@ -4,6 +4,7 @@ import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
+import com.fpt.locketcoupleapi.payload.response.SendRequestResponse;
 import com.fpt.locketcoupleapi.service.CoupleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,13 +125,13 @@ public class CoupleController {
     }
 
     @GetMapping("/getMyCouple")
-    public ResponseEntity<ApiResponse<List<UserDTO>>> getMyCouple() {
+    public ResponseEntity<ApiResponse<SendRequestResponse>> getMyCouple() {
         try {
             // Get the couple data from the service
-            List<UserDTO> coupleDTOs = coupleService.getMyCoupleByPending();
+            SendRequestResponse coupleDTOs = coupleService.getMyCoupleByPending();
 
             // Create a successful response
-            ApiResponse<List<UserDTO>> response = ApiResponse.<List<UserDTO>>builder()
+            ApiResponse<SendRequestResponse> response = ApiResponse.<SendRequestResponse>builder()
                     .code(HttpStatus.OK.value())
                     .message("Couple(s) found")
                     .data(coupleDTOs)
@@ -140,7 +141,7 @@ public class CoupleController {
 
         } catch (AppException e) {
             // Handle known exceptions (e.g. user not found or couple not found)
-            ApiResponse<List<UserDTO>> errorResponse = ApiResponse.<List<UserDTO>>builder()
+            ApiResponse<SendRequestResponse> errorResponse = ApiResponse.<SendRequestResponse>builder()
                     .code(HttpStatus.NOT_FOUND.value())
                     .message(e.getMessage())
                     .data(null)
@@ -150,7 +151,7 @@ public class CoupleController {
 
         } catch (Exception e) {
             // Handle generic errors
-            ApiResponse<List<UserDTO>> errorResponse = ApiResponse.<List<UserDTO>>builder()
+            ApiResponse<SendRequestResponse> errorResponse = ApiResponse.<SendRequestResponse>builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .message("An unexpected error occurred")
                     .data(null)

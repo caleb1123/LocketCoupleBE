@@ -39,6 +39,9 @@ public class Couple {
     @Column
     private EStatus status;
 
+    @Column
+    private ESex senderSex;
+
     @OneToMany(mappedBy = "couple")
     private List<Photo> photos;
 }
