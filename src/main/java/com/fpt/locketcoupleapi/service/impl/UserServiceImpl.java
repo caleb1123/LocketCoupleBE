@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
         response.setUserName(user.getUserName());
         response.setAddress(user.getAddress());
         response.setEmail(user.getEmail());
+        response.setAvatarUrl(user.getAvatarUrl());
         return response;
 
 
