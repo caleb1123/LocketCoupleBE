@@ -17,5 +17,4 @@ public class FindUserResponse {
     private String dob;
     private String email;
     private Boolean sex;
-    private String phone;
 }
