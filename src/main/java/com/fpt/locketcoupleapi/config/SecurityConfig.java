@@ -19,6 +19,7 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
             "/account/**",
             "/auth/**",
+            "/couple/**",
             "/swagger-ui/**",  // Thêm endpoint Swagger UI
             "/v3/api-docs/**"   // Thêm endpoint API docs
     };

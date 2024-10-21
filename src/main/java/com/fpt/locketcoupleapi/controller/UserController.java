@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -299,6 +300,43 @@ public class UserController {
         } catch (Exception e) {
             // Handle generic exceptions
             ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @GetMapping("/all-user")
+    public ResponseEntity<ApiResponse<List<UserDTO>>> getAllUser() {
+        try {
+            // Fetch all users
+            List<UserDTO> users = userService.getAllUser();
+
+            // Create a success response
+            ApiResponse<List<UserDTO>> response = ApiResponse.<List<UserDTO>>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Users found")
+                    .data(users)
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (AppException e) {
+            // Handle known exceptions
+            ApiResponse<List<UserDTO>> errorResponse = ApiResponse.<List<UserDTO>>builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .message(e.getMessage())
+                    .data(null) // No data in case of error
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
+        } catch (Exception e) {
+            // Handle generic exceptions
+            ApiResponse<List<UserDTO>> errorResponse = ApiResponse.<List<UserDTO>>builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .message("An unexpected error occurred")
                     .data(null)

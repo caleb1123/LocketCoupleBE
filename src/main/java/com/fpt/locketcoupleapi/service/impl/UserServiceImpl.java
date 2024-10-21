@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -171,6 +172,17 @@ public class UserServiceImpl implements UserService {
         user.setAvatarUrl((String) uploadResult.get("url"));
         userRepository.save(user);
         return (String) uploadResult.get("url");
+    }
+
+    @Override
+    public List<UserDTO> getAllUser() {
+        List<User> users = userRepository.findAll();
+        if(users.isEmpty()) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        return users.stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))  // Map each User to UserDTO
+                .toList();
     }
 
     // Phương thức tạo mã OTP ngẫu nhiên (6 chữ số)

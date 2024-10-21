@@ -8,6 +8,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface UserService {
     FindUserResponse findUserByUsername(String username);
@@ -23,4 +24,8 @@ public interface UserService {
     boolean verifyOTP(String email,String otp);
 
     String uploadImageToCloudinary(MultipartFile file) throws IOException;
+
+    List<UserDTO> getAllUser();
+
+
 }

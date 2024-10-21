@@ -1,5 +1,7 @@
 package com.fpt.locketcoupleapi.config;
 
+import com.fpt.locketcoupleapi.entity.Couple;
+import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +14,15 @@ public class ModelMapperConfig {
         // Create ModelMapper instance and configure matching strategy
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        modelMapper.typeMap(Couple.class, CoupleDTO.class).addMappings(mapper -> {
+            mapper.map(src -> src.getUserBoyfriend().getUserId(), CoupleDTO::setUserBoyfriendId);
+            mapper.map(src -> src.getUserGirlfriend().getUserId(), CoupleDTO::setUserGirlfriendId);
+        });
+
+
         return modelMapper;
+
 
     }
 
