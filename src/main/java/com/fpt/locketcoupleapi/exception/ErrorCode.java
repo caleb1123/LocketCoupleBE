@@ -50,7 +50,8 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(1042,"Role not found",HttpStatus.NOT_FOUND),
     ACCOUNT_INACTIVE(1041, "Account has not been activated", HttpStatus.FORBIDDEN),
     USER_NOT_ACTIVE(101, "User is not active", HttpStatus.FORBIDDEN),
-    COUPLE_NOT_FOUND(1043, "Couple not found", HttpStatus.NOT_FOUND);
+    COUPLE_NOT_FOUND(1043, "Couple not found", HttpStatus.NOT_FOUND),
+    MY_INFOR(1044, "you can't make friends with yourself", HttpStatus.BAD_REQUEST);
 
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

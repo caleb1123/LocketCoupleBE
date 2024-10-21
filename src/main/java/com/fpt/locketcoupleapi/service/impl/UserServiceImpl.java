@@ -39,6 +39,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public FindUserResponse findUserByUsername(String username) {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User myinfor = userRepository.findByUserName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if(myinfor.getUserName().equals(username)){
+            throw new AppException(ErrorCode.MY_INFOR);
+        }
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         FindUserResponse response = new FindUserResponse();
@@ -47,6 +54,8 @@ public class UserServiceImpl implements UserService {
         response.setAddress(user.getAddress());
         response.setEmail(user.getEmail());
         return response;
+
+
 
     }
 
