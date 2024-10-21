@@ -122,6 +122,9 @@ public class CoupleServiceImpl implements CoupleService {
         // Check user's sex and find couples accordingly
         if (user.getSex() == ESex.MALE || user.getSex() == ESex.FEMALE) {
             couples = coupleRepository.findCouplesByUserBoyfriend_UserId(user.getUserId());
+            if(couples == null) {
+                couples = coupleRepository.findCouplesByUserGirlfriend_UserId(user.getUserId());
+            }
         } else if (user.getSex() == ESex.OTHER) {
             couples = coupleRepository.findCouplesByUserBoyfriend_UserId(user.getUserId());
             if (couples == null) {
