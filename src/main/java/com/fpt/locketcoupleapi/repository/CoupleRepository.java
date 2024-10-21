@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public interface CoupleRepository extends JpaRepository<Couple,Integer> {
-    Couple findCouplesByUserBoyfriend_UserId(int userId);
-    Couple findCouplesByUserGirlfriend_UserId(int userId);
+    Couple findCoupleByUserBoyfriend_UserIdAndStatus(int userId, EStatus status);
+    Couple findCoupleByUserGirlfriend_UserIdAndStatus(int userId, EStatus status);
 
     // Đếm cặp đôi của bạn trai có trạng thái PENDING
     long countCouplesByUserBoyfriend_UserIdAndStatus(int userId, EStatus status);

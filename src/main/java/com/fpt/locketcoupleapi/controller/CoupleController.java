@@ -195,4 +195,41 @@ public class CoupleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+    @GetMapping("/getSendRequest")
+    public ResponseEntity<ApiResponse<SendRequestResponse>> getSendRequest() {
+        try {
+            // Get the couple data from the service
+            SendRequestResponse coupleDTOs = coupleService.getSendRequest();
+
+            // Create a successful response
+            ApiResponse<SendRequestResponse> response = ApiResponse.<SendRequestResponse>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Couple(s) found")
+                    .data(coupleDTOs)
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (AppException e) {
+            // Handle known exceptions (e.g. user not found or couple not found)
+            ApiResponse<SendRequestResponse> errorResponse = ApiResponse.<SendRequestResponse>builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+
+        } catch (Exception e) {
+            // Handle generic errors
+            ApiResponse<SendRequestResponse> errorResponse = ApiResponse.<SendRequestResponse>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 }

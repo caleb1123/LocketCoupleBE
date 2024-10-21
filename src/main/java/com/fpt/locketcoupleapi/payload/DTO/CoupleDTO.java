@@ -1,5 +1,6 @@
 package com.fpt.locketcoupleapi.payload.DTO;
 
+import com.fpt.locketcoupleapi.entity.ESex;
 import com.fpt.locketcoupleapi.entity.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,8 @@ public class CoupleDTO {
     private String coupleAvatar;
     private LocalDateTime createdDate;
     private EStatus status;
+    private ESex senderSex;
     private int userBoyfriendId;
     private int userGirlfriendId;
+
 }

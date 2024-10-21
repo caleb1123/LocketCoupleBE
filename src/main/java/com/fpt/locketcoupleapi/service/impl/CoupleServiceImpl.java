@@ -49,12 +49,8 @@ public class CoupleServiceImpl implements CoupleService {
 
         }else if(sender.getSex() == ESex.FEMALE){
             count = coupleRepository.countCouplesByUserGirlfriend_UserIdAndStatus(sender.getUserId(), EStatus.PENDING);
-        }else if(sender.getSex() == ESex.OTHER) {
-            count = coupleRepository.countCouplesByUserBoyfriend_UserIdAndStatus(sender.getUserId(), EStatus.PENDING);
-            if (count == 0) {
-                count = coupleRepository.countCouplesByUserGirlfriend_UserIdAndStatus(sender.getUserId(), EStatus.PENDING);
-            }
-        }else {
+        }
+        else {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
         if(count >=1 ) {
@@ -121,14 +117,9 @@ public class CoupleServiceImpl implements CoupleService {
 
         // Check user's sex and find couples accordingly
         if (user.getSex() == ESex.MALE || user.getSex() == ESex.FEMALE) {
-            couples = coupleRepository.findCouplesByUserBoyfriend_UserId(user.getUserId());
+            couples = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(), EStatus.PENDING);
             if(couples == null) {
-                couples = coupleRepository.findCouplesByUserGirlfriend_UserId(user.getUserId());
-            }
-        } else if (user.getSex() == ESex.OTHER) {
-            couples = coupleRepository.findCouplesByUserBoyfriend_UserId(user.getUserId());
-            if (couples == null) {
-                couples = coupleRepository.findCouplesByUserGirlfriend_UserId(user.getUserId());
+                couples = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(), EStatus.PENDING);
             }
         }
 
@@ -136,10 +127,16 @@ public class CoupleServiceImpl implements CoupleService {
         if (couples == null) {
             throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
         }
+        User response = new User();
+        if(couples.getSenderSex() == ESex.FEMALE){
+            response = couples.getUserBoyfriend();
+        }else {
+            response = couples.getUserGirlfriend();
+        }
         if(couples.getSenderSex() == user.getSex()) {
             throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
         }
-        SendRequestResponse userDTOs = modelMapper.map(couples,SendRequestResponse.class);
+        SendRequestResponse userDTOs = modelMapper.map(response,SendRequestResponse.class);
         userDTOs.setUserId(user.getUserId());
         userDTOs.setCoupleId(couples.getCoupleId());
         // Map each Couple to CoupleDTO
@@ -163,6 +160,40 @@ public class CoupleServiceImpl implements CoupleService {
         }
         coupleRepository.save(couple);
 
+    }
+
+    @Override
+    public SendRequestResponse getSendRequest() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Couple couples = new Couple();
+        if (user.getSex() == ESex.MALE || user.getSex() == ESex.FEMALE) {
+            couples = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(), EStatus.PENDING);
+            if(couples == null) {
+                couples = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(), EStatus.PENDING);
+            }
+        }
+
+        // Check if couples list is empty
+        if (couples == null) {
+            throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
+        }
+        User response = new User();
+        if(couples.getSenderSex() == ESex.FEMALE){
+            response = couples.getUserBoyfriend();
+        }else {
+            response = couples.getUserGirlfriend();
+        }
+        if(couples.getSenderSex() != user.getSex()) {
+            throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
+        }
+        SendRequestResponse userDTOs = modelMapper.map(response,SendRequestResponse.class);
+        userDTOs.setUserId(user.getUserId());
+        userDTOs.setCoupleId(couples.getCoupleId());
+        // Map each Couple to CoupleDTO
+        return userDTOs;
     }
 
 

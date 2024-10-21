@@ -16,4 +16,6 @@ public interface CoupleService {
         SendRequestResponse getMyCoupleByPending();
 
         void CancelRequest(int requestId);
+
+        SendRequestResponse getSendRequest();
 }
