@@ -204,6 +204,9 @@ public class CoupleServiceImpl implements CoupleService {
         User user = userRepository.findByUserName(name)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Couple couple = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(),EStatus.ACCEPTED);
+        if (couple == null) {
+            couple = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(),EStatus.ACCEPTED);
+        }
         CoupleResponse coupleResponse = new CoupleResponse();
         coupleResponse = modelMapper.map(couple,CoupleResponse.class);
         if(couple.getUserBoyfriend().getUserId() == user.getUserId()){
