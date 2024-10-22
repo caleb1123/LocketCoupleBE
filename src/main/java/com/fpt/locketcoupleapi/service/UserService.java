@@ -2,6 +2,7 @@ package com.fpt.locketcoupleapi.service;
 
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
 import com.fpt.locketcoupleapi.payload.request.UserUpdateResquest;
+import com.fpt.locketcoupleapi.payload.response.CoupleResponse;
 import com.fpt.locketcoupleapi.payload.response.FindUserResponse;
 import com.fpt.locketcoupleapi.payload.response.MyInforUserResponse;
 import jakarta.mail.MessagingException;
@@ -26,6 +27,5 @@ public interface UserService {
     String uploadImageToCloudinary(MultipartFile file) throws IOException;
 
     List<UserDTO> getAllUser();
-
 
 }

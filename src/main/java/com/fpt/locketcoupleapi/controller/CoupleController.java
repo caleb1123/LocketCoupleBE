@@ -5,6 +5,7 @@ import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
+import com.fpt.locketcoupleapi.payload.response.CoupleResponse;
 import com.fpt.locketcoupleapi.payload.response.SendRequestResponse;
 import com.fpt.locketcoupleapi.service.CoupleService;
 import lombok.extern.slf4j.Slf4j;
@@ -224,6 +225,43 @@ public class CoupleController {
         } catch (Exception e) {
             // Handle generic errors
             ApiResponse<SendRequestResponse> errorResponse = ApiResponse.<SendRequestResponse>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An unexpected error occurred")
+                    .data(null)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @GetMapping("/getMyLover")
+    public ResponseEntity<ApiResponse<CoupleResponse>> getMyLover() {
+        try {
+            // Gọi service để lấy thông tin couple
+            CoupleResponse couple = coupleService.getMyCoupleByComplet();
+
+            // Nếu thành công, trả về ApiResponse với dữ liệu couple
+            ApiResponse<CoupleResponse> response = ApiResponse.<CoupleResponse>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Couple found successfully")
+                    .data(couple)
+                    .build();
+
+            return ResponseEntity.ok(response);
+
+        } catch (AppException e) {
+            // Xử lý ngoại lệ do lỗi nghiệp vụ và trả về lỗi với mã code tương ứng
+            ApiResponse<CoupleResponse> errorResponse = ApiResponse.<CoupleResponse>builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(null) // Không trả về dữ liệu khi có lỗi
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+        } catch (Exception e) {
+            // Xử lý ngoại lệ không mong muốn
+            ApiResponse<CoupleResponse> errorResponse = ApiResponse.<CoupleResponse>builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .message("An unexpected error occurred")
                     .data(null)

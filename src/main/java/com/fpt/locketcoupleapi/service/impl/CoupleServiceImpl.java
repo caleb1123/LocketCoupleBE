@@ -8,6 +8,7 @@ import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.exception.ErrorCode;
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
+import com.fpt.locketcoupleapi.payload.response.CoupleResponse;
 import com.fpt.locketcoupleapi.payload.response.SendRequestResponse;
 import com.fpt.locketcoupleapi.repository.CoupleRepository;
 import com.fpt.locketcoupleapi.repository.UserRepository;
@@ -194,6 +195,24 @@ public class CoupleServiceImpl implements CoupleService {
         userDTOs.setCoupleId(couples.getCoupleId());
         // Map each Couple to CoupleDTO
         return userDTOs;
+    }
+
+    @Override
+    public CoupleResponse getMyCoupleByComplet() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Couple couple = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(),EStatus.ACCEPTED);
+        CoupleResponse coupleResponse = new CoupleResponse();
+        coupleResponse = modelMapper.map(couple,CoupleResponse.class);
+        if(couple.getUserBoyfriend().getUserId() == user.getUserId()){
+            coupleResponse.setLover(modelMapper.map(couple.getUserGirlfriend(),UserDTO.class));
+        }else if(couple.getUserGirlfriend().getUserId() == user.getUserId()){
+            coupleResponse.setLover(modelMapper.map((couple.getUserBoyfriend()),UserDTO.class));
+        }
+
+        return coupleResponse;
     }
 
 
