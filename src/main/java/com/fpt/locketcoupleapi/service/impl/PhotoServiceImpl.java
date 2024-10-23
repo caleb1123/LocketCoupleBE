@@ -38,29 +38,42 @@ public class PhotoServiceImpl implements PhotoService {
     @Autowired
     private Cloudinary cloudinary;
     @Override
-    public String uploadFileWithCouple(MultipartFile file,String title) throws IOException {
+    public String uploadFileWithCouple(MultipartFile file, String title) throws IOException {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
         User user = userRepository.findByUserName(name)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         Couple couple = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
-        if(couple == null) {
+        if (couple == null) {
             couple = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
         }
-        if(couple == null) {
+        if (couple == null) {
             throw new AppException(ErrorCode.COUPLE_NOT_EXISTED);
         }
 
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        // Kiểm tra xem tệp là hình ảnh hay video
+        Map uploadResult;
+        if (file.getContentType() != null && file.getContentType().startsWith("video/")) {
+            // Nếu là video, chỉ định loại tệp là video
+            uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "video"));
+        } else {
+            // Nếu không phải video, xử lý như ảnh thông thường
+            uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        }
+
+        // Tạo đối tượng Photo và lưu thông tin
         Photo photo = new Photo();
-        photo.setPhotoUrl((String) uploadResult.get("url"));
+        photo.setPhotoUrl((String) uploadResult.get("url")); // URL của ảnh hoặc video sau khi upload
         photo.setCouple(couple);
         photo.setCreatedDate(LocalDateTime.now());
         photo.setPhotoName(title);
         photo.setStatus(true);
         photoRepository.save(photo);
-        return "Upload photo successfully";
+
+        return "Upload file successfully";
     }
+
 
     @Override
     public List<PhotoDTO> findAll() {
