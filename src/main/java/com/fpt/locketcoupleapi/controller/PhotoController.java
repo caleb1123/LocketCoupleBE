@@ -23,10 +23,10 @@ public class PhotoController {
     private PhotoService photoService;
 
     @PostMapping("/uploadFileWithCouple/")
-    public ResponseEntity<ApiResponse<String>> uploadFileWithCouple(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResponse<String>> uploadFileWithCouple(@RequestParam("file") MultipartFile file, @RequestParam("title") String title) {
         try {
             // Gọi service để upload file liên quan đến couple
-            String resultMessage = photoService.uploadFileWithCouple(file);
+            String resultMessage = photoService.uploadFileWithCouple(file,title);
 
             // Tạo phản hồi thành công
             ApiResponse<String> response = ApiResponse.<String>builder()

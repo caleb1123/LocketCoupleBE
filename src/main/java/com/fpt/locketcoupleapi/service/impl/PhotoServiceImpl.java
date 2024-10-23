@@ -38,7 +38,7 @@ public class PhotoServiceImpl implements PhotoService {
     @Autowired
     private Cloudinary cloudinary;
     @Override
-    public String uploadFileWithCouple(MultipartFile file) throws IOException {
+    public String uploadFileWithCouple(MultipartFile file,String title) throws IOException {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
         User user = userRepository.findByUserName(name)
@@ -56,6 +56,7 @@ public class PhotoServiceImpl implements PhotoService {
         photo.setPhotoUrl((String) uploadResult.get("url"));
         photo.setCouple(couple);
         photo.setCreatedDate(LocalDateTime.now());
+        photo.setPhotoName(title);
         photo.setStatus(true);
         photoRepository.save(photo);
         return "Upload photo successfully";
