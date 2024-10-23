@@ -10,4 +10,6 @@ public interface PhotoService {
     String uploadFileWithCouple(MultipartFile file,String title) throws IOException;
 
     List<PhotoDTO> findAll();
+
+    List<PhotoDTO> findByCoupleId();
 }

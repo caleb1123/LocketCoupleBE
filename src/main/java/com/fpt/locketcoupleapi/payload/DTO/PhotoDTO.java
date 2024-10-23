@@ -15,4 +15,5 @@ public class PhotoDTO {
     private String photoName;
     private boolean status;
     private int coupleId;
+    private int senderId;
 }

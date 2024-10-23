@@ -58,5 +58,6 @@ public class User {
     @OneToMany(mappedBy = "userGirlfriend")
     private List<Couple> coupleGirlfriend;
 
-
+    @OneToMany(mappedBy = "sender")
+    private List<Photo> photos;
 }

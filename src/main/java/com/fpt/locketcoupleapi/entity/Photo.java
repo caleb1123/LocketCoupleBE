@@ -24,6 +24,10 @@ public class Photo {
     @JoinColumn(name = "couple_id")
     private Couple couple;
 
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
+
     @Column
     private LocalDateTime createdDate;
 

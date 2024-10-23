@@ -69,6 +69,7 @@ public class PhotoServiceImpl implements PhotoService {
         photo.setCreatedDate(LocalDateTime.now());
         photo.setPhotoName(title);
         photo.setStatus(true);
+        photo.setSender(user);
         photoRepository.save(photo);
 
         return "Upload file successfully";
@@ -79,8 +80,33 @@ public class PhotoServiceImpl implements PhotoService {
     public List<PhotoDTO> findAll() {
         // Lấy tất cả Photo entities từ repository
         List<Photo> photos = photoRepository.findAll();
-
+        if(photos.isEmpty()){
+            throw new AppException(ErrorCode.PHOTO_NOT_EXISTED);
+        }
         // Chuyển đổi danh sách Photo entities sang PhotoDTOs
+        return photos.stream()
+                .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PhotoDTO> findByCoupleId() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Couple couple = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
+        if(couple == null) {
+            couple = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
+        }
+        if(couple == null) {
+            throw new AppException(ErrorCode.COUPLE_NOT_EXISTED);
+        }
+
+        List<Photo> photos = photoRepository.findPhotosByCouple_CoupleId(couple.getCoupleId());
+        if(photos.isEmpty()){
+            throw new AppException(ErrorCode.PHOTO_NOT_EXISTED);
+        }
         return photos.stream()
                 .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
                 .collect(Collectors.toList());

@@ -24,6 +24,7 @@ public class ModelMapperConfig {
 
         modelMapper.typeMap(Photo.class, PhotoDTO.class).addMappings(mapper ->{
             mapper.map(src -> src.getCouple().getCoupleId(), PhotoDTO::setCoupleId);
+            mapper.map(src -> src.getSender().getUserId(), PhotoDTO::setSenderId);
         });
 
 

@@ -18,4 +18,6 @@ public interface CoupleRepository extends JpaRepository<Couple,Integer> {
 
     // Đếm cặp đôi của bạn gái có trạng thái PENDING
     long countCouplesByUserGirlfriend_UserIdAndStatus(int userId, EStatus status);
+
+
 }
