@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         FindUserResponse response = new FindUserResponse();
+        response.setUserId(user.getUserId());
         response.setFullName(user.getFullName());
         response.setUserName(user.getUserName());
         response.setAddress(user.getAddress());
