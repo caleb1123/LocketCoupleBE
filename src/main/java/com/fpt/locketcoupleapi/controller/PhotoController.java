@@ -1,6 +1,7 @@
 package com.fpt.locketcoupleapi.controller;
 
 import com.fpt.locketcoupleapi.exception.AppException;
+import com.fpt.locketcoupleapi.payload.DTO.PhotoDTO;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
 import com.fpt.locketcoupleapi.service.PhotoService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/photo")
@@ -52,5 +56,31 @@ public class PhotoController {
         }
     }
 
+    @GetMapping("/findAll")
+    public ResponseEntity<ApiResponse<List<PhotoDTO>>> findAll() {
+        try {
+            // Lấy danh sách tất cả các photo từ service
+            List<PhotoDTO> photoDTOs = photoService.findAll();
 
+            // Trả về phản hồi thành công với danh sách photo
+            return ResponseEntity.ok(
+                    ApiResponse.<List<PhotoDTO>>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Get all photos successfully")
+                            .data(photoDTOs)
+                            .build()
+            );
+        } catch (Exception e) {
+            // Log lỗi để dễ dàng kiểm tra và theo dõi sau này
+            e.printStackTrace();
+
+            // Trả về phản hồi lỗi khi có ngoại lệ
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.<List<PhotoDTO>>builder()
+                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message("An error occurred while getting all photos")
+                            .data(null)
+                            .build());
+        }
+    }
 }

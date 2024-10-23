@@ -8,6 +8,7 @@ import com.fpt.locketcoupleapi.entity.Photo;
 import com.fpt.locketcoupleapi.entity.User;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.exception.ErrorCode;
+import com.fpt.locketcoupleapi.payload.DTO.PhotoDTO;
 import com.fpt.locketcoupleapi.repository.CoupleRepository;
 import com.fpt.locketcoupleapi.repository.PhotoRepository;
 import com.fpt.locketcoupleapi.repository.UserRepository;
@@ -20,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -56,5 +59,16 @@ public class PhotoServiceImpl implements PhotoService {
         photo.setStatus(true);
         photoRepository.save(photo);
         return "Upload photo successfully";
+    }
+
+    @Override
+    public List<PhotoDTO> findAll() {
+        // Lấy tất cả Photo entities từ repository
+        List<Photo> photos = photoRepository.findAll();
+
+        // Chuyển đổi danh sách Photo entities sang PhotoDTOs
+        return photos.stream()
+                .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
+                .collect(Collectors.toList());
     }
 }
