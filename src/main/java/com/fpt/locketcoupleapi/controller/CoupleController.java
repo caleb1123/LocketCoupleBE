@@ -126,7 +126,7 @@ public class CoupleController {
         }
     }
 
-    @GetMapping("/CoupleInvite")
+    @GetMapping("/LoverInvite")
     public ResponseEntity<ApiResponse<SendRequestResponse>> getMyCouple() {
         try {
             // Get the couple data from the service

@@ -116,13 +116,11 @@ public class CoupleServiceImpl implements CoupleService {
 
         Couple couples = new Couple();
 
-        // Check user's sex and find couples accordingly
-        if (user.getSex() == ESex.MALE || user.getSex() == ESex.FEMALE) {
             couples = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(), EStatus.PENDING);
             if(couples == null) {
                 couples = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(), EStatus.PENDING);
             }
-        }
+
 
         // Check if couples list is empty
         if (couples == null) {
@@ -138,7 +136,7 @@ public class CoupleServiceImpl implements CoupleService {
             throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
         }
         SendRequestResponse userDTOs = modelMapper.map(response,SendRequestResponse.class);
-        userDTOs.setUserId(user.getUserId());
+        userDTOs.setUserId(response.getUserId());
         userDTOs.setCoupleId(couples.getCoupleId());
         // Map each Couple to CoupleDTO
         return userDTOs;
