@@ -12,6 +12,7 @@ public class SendRequestResponse {
     private int userId;
     private String fullName;
     private String userName;
+    private String avatarUrl;
     private String address;
     private String dob;
     private String email;
