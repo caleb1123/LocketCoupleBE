@@ -128,9 +128,9 @@ public class CoupleServiceImpl implements CoupleService {
         }
         User response = new User();
         if(couples.getSenderSex() == ESex.FEMALE){
-            response = couples.getUserBoyfriend();
-        }else {
             response = couples.getUserGirlfriend();
+        }else {
+            response = couples.getUserBoyfriend();
         }
         if(couples.getSenderSex() == user.getSex()) {
             throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
