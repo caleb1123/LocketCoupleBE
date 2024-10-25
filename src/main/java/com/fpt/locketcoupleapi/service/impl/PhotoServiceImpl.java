@@ -6,6 +6,7 @@ import com.fpt.locketcoupleapi.entity.*;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.exception.ErrorCode;
 import com.fpt.locketcoupleapi.payload.DTO.PhotoDTO;
+import com.fpt.locketcoupleapi.payload.response.PhotoResponse;
 import com.fpt.locketcoupleapi.repository.CoupleRepository;
 import com.fpt.locketcoupleapi.repository.PhotoRepository;
 import com.fpt.locketcoupleapi.repository.UserRepository;
@@ -75,7 +76,7 @@ public class PhotoServiceImpl implements PhotoService {
 
 
     @Override
-    public List<PhotoDTO> findAll() {
+    public List<PhotoResponse> findAll() {
         // Lấy tất cả Photo entities từ repository
         List<Photo> photos = photoRepository.findAll();
         if (photos.isEmpty()) {
@@ -83,12 +84,12 @@ public class PhotoServiceImpl implements PhotoService {
         }
         // Chuyển đổi danh sách Photo entities sang PhotoDTOs
         return photos.stream()
-                .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
+                .map(photo -> modelMapper.map(photo, PhotoResponse.class)) // Mapping entity to DTO
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PhotoDTO> findByCoupleId() {
+    public List<PhotoResponse> findByCoupleId() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
         User user = userRepository.findByUserName(name)
@@ -106,12 +107,12 @@ public class PhotoServiceImpl implements PhotoService {
             throw new AppException(ErrorCode.PHOTO_NOT_EXISTED);
         }
         return photos.stream()
-                .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
+                .map(photo -> modelMapper.map(photo, PhotoResponse.class)) // Mapping entity to DTO
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PhotoDTO> findByLover() {
+    public List<PhotoResponse> findByLover() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
         User user = userRepository.findByUserName(name)
@@ -135,7 +136,7 @@ public class PhotoServiceImpl implements PhotoService {
         }
 
         return photos.stream()
-                .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
+                .map(photo -> modelMapper.map(photo, PhotoResponse.class)) // Mapping entity to DTO
                 .collect(Collectors.toList());
     }
 }

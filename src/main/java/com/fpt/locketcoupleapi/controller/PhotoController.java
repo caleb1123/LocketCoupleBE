@@ -3,6 +3,7 @@ package com.fpt.locketcoupleapi.controller;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.payload.DTO.PhotoDTO;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
+import com.fpt.locketcoupleapi.payload.response.PhotoResponse;
 import com.fpt.locketcoupleapi.service.PhotoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,14 +58,14 @@ public class PhotoController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<ApiResponse<List<PhotoDTO>>> findAll() {
+    public ResponseEntity<ApiResponse<List<PhotoResponse>>> findAll() {
         try {
             // Lấy danh sách tất cả các photo từ service
-            List<PhotoDTO> photoDTOs = photoService.findAll();
+            List<PhotoResponse> photoDTOs = photoService.findAll();
 
             // Trả về phản hồi thành công với danh sách photo
             return ResponseEntity.ok(
-                    ApiResponse.<List<PhotoDTO>>builder()
+                    ApiResponse.<List<PhotoResponse>>builder()
                             .code(HttpStatus.OK.value())
                             .message("Get all photos successfully")
                             .data(photoDTOs)
@@ -76,7 +77,7 @@ public class PhotoController {
 
             // Trả về phản hồi lỗi khi có ngoại lệ
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.<List<PhotoDTO>>builder()
+                    .body(ApiResponse.<List<PhotoResponse>>builder()
                             .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                             .message("An error occurred while getting all photos")
                             .data(null)
@@ -85,14 +86,14 @@ public class PhotoController {
     }
 
     @GetMapping("/findByCoupleId")
-    public ResponseEntity<ApiResponse<List<PhotoDTO>>> findByCoupleId() {
+    public ResponseEntity<ApiResponse<List<PhotoResponse>>> findByCoupleId() {
         try {
             // Lấy danh sách tất cả các photo từ service
-            List<PhotoDTO> photoDTOs = photoService.findByCoupleId();
+            List<PhotoResponse> photoDTOs = photoService.findByCoupleId();
 
             // Trả về phản hồi thành công với danh sách photo
             return ResponseEntity.ok(
-                    ApiResponse.<List<PhotoDTO>>builder()
+                    ApiResponse.<List<PhotoResponse>>builder()
                             .code(HttpStatus.OK.value())
                             .message("Get all photos successfully")
                             .data(photoDTOs)
@@ -104,7 +105,7 @@ public class PhotoController {
 
             // Trả về phản hồi lỗi khi có ngoại lệ
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.<List<PhotoDTO>>builder()
+                    .body(ApiResponse.<List<PhotoResponse>>builder()
                             .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                             .message("An error occurred while getting all photos")
                             .data(null)
@@ -113,14 +114,15 @@ public class PhotoController {
     }
 
     @GetMapping("/findByLover")
-    public ResponseEntity<ApiResponse<List<PhotoDTO>>> findByLover() {
+    public ResponseEntity<ApiResponse<List<PhotoResponse>>> findByLover() {
         try {
             // Lấy danh sách tất cả các photo từ service
-            List<PhotoDTO> photoDTOs = photoService.findByLover();
+            List<PhotoResponse> photoDTOs = photoService.findByLover();
+
 
             // Trả về phản hồi thành công với danh sách photo
             return ResponseEntity.ok(
-                    ApiResponse.<List<PhotoDTO>>builder()
+                    ApiResponse.<List<PhotoResponse>>builder()
                             .code(HttpStatus.OK.value())
                             .message("Get all photos successfully")
                             .data(photoDTOs)
@@ -132,7 +134,7 @@ public class PhotoController {
 
             // Trả về phản hồi lỗi khi có ngoại lệ
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.<List<PhotoDTO>>builder()
+                    .body(ApiResponse.<List<PhotoResponse>>builder()
                             .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                             .message("An error occurred while getting all photos")
                             .data(null)

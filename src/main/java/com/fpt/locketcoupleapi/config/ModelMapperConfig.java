@@ -4,6 +4,7 @@ import com.fpt.locketcoupleapi.entity.Couple;
 import com.fpt.locketcoupleapi.entity.Photo;
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.PhotoDTO;
+import com.fpt.locketcoupleapi.payload.response.PhotoResponse;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,10 @@ public class ModelMapperConfig {
             mapper.map(src -> src.getCouple().getCoupleId(), PhotoDTO::setCoupleId);
             mapper.map(src -> src.getSender().getUserId(), PhotoDTO::setSenderId);
         });
-
+        modelMapper.typeMap(Photo.class, PhotoResponse.class).addMappings(mapper ->{
+            mapper.map(src -> src.getCouple().getCoupleId(), PhotoResponse::setCoupleId);
+            mapper.map(src -> src.getSender(), PhotoResponse::setSenderId);
+        });
 
         return modelMapper;
 
