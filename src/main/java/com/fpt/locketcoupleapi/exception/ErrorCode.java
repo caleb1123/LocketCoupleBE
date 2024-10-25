@@ -54,7 +54,8 @@ public enum ErrorCode {
     MY_INFOR(1044, "you can't make friends with yourself", HttpStatus.BAD_REQUEST),
     COUPLE_EXISTED(1045, "Couple existed", HttpStatus.BAD_REQUEST),
     COUPLE_NOT_EXISTED(1046, "Couple not existed", HttpStatus.BAD_REQUEST),
-    PHOTO_NOT_EXISTED(1047, "Photo not existed", HttpStatus.BAD_REQUEST);
+    PHOTO_NOT_EXISTED(1047, "Photo not existed", HttpStatus.BAD_REQUEST),
+    USER_NOT_ALLOWED(1048, "User not allowed", HttpStatus.BAD_REQUEST);
 
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -12,4 +12,6 @@ public interface PhotoService {
     List<PhotoDTO> findAll();
 
     List<PhotoDTO> findByCoupleId();
+
+    List<PhotoDTO> findByLover();
 }

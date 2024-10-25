@@ -111,4 +111,32 @@ public class PhotoController {
                             .build());
         }
     }
+
+    @GetMapping("/findByLover")
+    public ResponseEntity<ApiResponse<List<PhotoDTO>>> findByLover() {
+        try {
+            // Lấy danh sách tất cả các photo từ service
+            List<PhotoDTO> photoDTOs = photoService.findByLover();
+
+            // Trả về phản hồi thành công với danh sách photo
+            return ResponseEntity.ok(
+                    ApiResponse.<List<PhotoDTO>>builder()
+                            .code(HttpStatus.OK.value())
+                            .message("Get all photos successfully")
+                            .data(photoDTOs)
+                            .build()
+            );
+        } catch (Exception e) {
+            // Log lỗi để dễ dàng kiểm tra và theo dõi sau này
+            e.printStackTrace();
+
+            // Trả về phản hồi lỗi khi có ngoại lệ
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.<List<PhotoDTO>>builder()
+                            .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .message("An error occurred while getting all photos")
+                            .data(null)
+                            .build());
+        }
+    }
 }

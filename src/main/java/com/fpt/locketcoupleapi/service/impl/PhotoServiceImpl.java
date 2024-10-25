@@ -2,10 +2,7 @@ package com.fpt.locketcoupleapi.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.fpt.locketcoupleapi.entity.Couple;
-import com.fpt.locketcoupleapi.entity.EStatus;
-import com.fpt.locketcoupleapi.entity.Photo;
-import com.fpt.locketcoupleapi.entity.User;
+import com.fpt.locketcoupleapi.entity.*;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.exception.ErrorCode;
 import com.fpt.locketcoupleapi.payload.DTO.PhotoDTO;
@@ -37,6 +34,7 @@ public class PhotoServiceImpl implements PhotoService {
     private ModelMapper modelMapper;
     @Autowired
     private Cloudinary cloudinary;
+
     @Override
     public String uploadFileWithCouple(MultipartFile file, String title) throws IOException {
         var context = SecurityContextHolder.getContext();
@@ -80,7 +78,7 @@ public class PhotoServiceImpl implements PhotoService {
     public List<PhotoDTO> findAll() {
         // Lấy tất cả Photo entities từ repository
         List<Photo> photos = photoRepository.findAll();
-        if(photos.isEmpty()){
+        if (photos.isEmpty()) {
             throw new AppException(ErrorCode.PHOTO_NOT_EXISTED);
         }
         // Chuyển đổi danh sách Photo entities sang PhotoDTOs
@@ -96,17 +94,46 @@ public class PhotoServiceImpl implements PhotoService {
         User user = userRepository.findByUserName(name)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Couple couple = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
-        if(couple == null) {
+        if (couple == null) {
             couple = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
         }
-        if(couple == null) {
+        if (couple == null) {
             throw new AppException(ErrorCode.COUPLE_NOT_EXISTED);
         }
 
         List<Photo> photos = photoRepository.findPhotosByCouple_CoupleId(couple.getCoupleId());
-        if(photos.isEmpty()){
+        if (photos.isEmpty()) {
             throw new AppException(ErrorCode.PHOTO_NOT_EXISTED);
         }
+        return photos.stream()
+                .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PhotoDTO> findByLover() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Couple couple = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
+        if (couple == null) {
+            couple = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(), EStatus.ACCEPTED);
+        }
+        if (couple == null) {
+            throw new AppException(ErrorCode.COUPLE_NOT_EXISTED);
+        }
+
+        List<Photo> photos = photoRepository.findPhotosBySender_UserId(
+                user.getSex() == ESex.MALE
+                        ? couple.getUserGirlfriend().getUserId()
+                        : couple.getUserBoyfriend().getUserId()
+        );
+
+        if (photos.isEmpty()) {
+            throw new AppException(ErrorCode.PHOTO_NOT_EXISTED);
+        }
+
         return photos.stream()
                 .map(photo -> modelMapper.map(photo, PhotoDTO.class)) // Mapping entity to DTO
                 .collect(Collectors.toList());
