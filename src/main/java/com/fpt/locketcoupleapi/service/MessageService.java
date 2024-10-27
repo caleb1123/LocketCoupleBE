@@ -3,6 +3,7 @@ package com.fpt.locketcoupleapi.service;
 import com.fpt.locketcoupleapi.entity.Message;
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
 import com.fpt.locketcoupleapi.payload.request.CreateMessageRequest;
+import com.fpt.locketcoupleapi.payload.request.UpdateMessageRequest;
 
 import java.util.List;
 
@@ -15,6 +16,6 @@ public interface MessageService {
 
     void deleteMessage(int messageId);
 
-    MessageDTO updateMessage(int messageId);
+    MessageDTO updateMessage(UpdateMessageRequest messageRequest);
 
 }

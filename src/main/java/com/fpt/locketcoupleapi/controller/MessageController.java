@@ -2,6 +2,7 @@ package com.fpt.locketcoupleapi.controller;
 
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
 import com.fpt.locketcoupleapi.payload.request.CreateMessageRequest;
+import com.fpt.locketcoupleapi.payload.request.UpdateMessageRequest;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
 import com.fpt.locketcoupleapi.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,17 @@ public class MessageController {
         ApiResponse<String> response = ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message("Successfully Deleted Message")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<ApiResponse<MessageDTO>> updateMessage(@RequestBody UpdateMessageRequest messageRequest) {
+        MessageDTO messageDTO = messageService.updateMessage(messageRequest);
+        ApiResponse<MessageDTO> response = ApiResponse.<MessageDTO>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully updated Message")
+                .data(messageDTO)
                 .build();
         return ResponseEntity.ok(response);
     }
