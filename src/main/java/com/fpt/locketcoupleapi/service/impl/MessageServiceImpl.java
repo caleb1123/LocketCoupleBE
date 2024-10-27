@@ -3,14 +3,19 @@ package com.fpt.locketcoupleapi.service.impl;
 import com.fpt.locketcoupleapi.config.Util;
 import com.fpt.locketcoupleapi.entity.Message;
 import com.fpt.locketcoupleapi.entity.Photo;
+import com.fpt.locketcoupleapi.entity.User;
+import com.fpt.locketcoupleapi.exception.AppException;
+import com.fpt.locketcoupleapi.exception.ErrorCode;
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
 import com.fpt.locketcoupleapi.payload.request.CreateMessageRequest;
 import com.fpt.locketcoupleapi.payload.request.UpdateMessageRequest;
 import com.fpt.locketcoupleapi.repository.MessageRepository;
 import com.fpt.locketcoupleapi.repository.PhotoRepository;
+import com.fpt.locketcoupleapi.repository.UserRepository;
 import com.fpt.locketcoupleapi.service.MessageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,6 +34,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     ModelMapper mapper;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     Util util;
@@ -84,13 +92,20 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDTO createMessage(CreateMessageRequest messageRequest) {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new RuntimeException("Not found User!"));
+
         Message message = new Message();
         message.setMessageContent(messageRequest.getMessageContent());
-        message.setUser(util.getUserFromAuthentication());
+        message.setUser(user);
         message.setSendDate(LocalDateTime.now());
         Photo photo = photoRepository.findById(messageRequest.getPhotoId())
-                .orElseThrow(() -> new RuntimeException("Not found photo!"));
+                .orElseThrow(() -> new AppException(ErrorCode.PHOTO_NOT_EXISTED));
         message.setPhoto(photo);
+
 
         Message saved = messageRepository.save(message);
 

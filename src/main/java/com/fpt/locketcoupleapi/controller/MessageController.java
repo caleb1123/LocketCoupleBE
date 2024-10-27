@@ -54,24 +54,5 @@ public class MessageController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteMessage(@PathVariable int id) {
-        messageService.deleteMessage(id);
-        ApiResponse<String> response = ApiResponse.<String>builder()
-                .code(HttpStatus.OK.value())
-                .message("Successfully Deleted Message")
-                .build();
-        return ResponseEntity.ok(response);
-    }
 
-    @PostMapping("/update")
-    public ResponseEntity<ApiResponse<MessageDTO>> updateMessage(@RequestBody UpdateMessageRequest messageRequest) {
-        MessageDTO messageDTO = messageService.updateMessage(messageRequest);
-        ApiResponse<MessageDTO> response = ApiResponse.<MessageDTO>builder()
-                .code(HttpStatus.OK.value())
-                .message("Successfully updated Message")
-                .data(messageDTO)
-                .build();
-        return ResponseEntity.ok(response);
-    }
 }
