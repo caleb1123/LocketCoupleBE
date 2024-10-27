@@ -102,7 +102,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void deleteMessage(int messageId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("Not found Message!"));
 
+        messageRepository.delete(message);
     }
 
     @Override

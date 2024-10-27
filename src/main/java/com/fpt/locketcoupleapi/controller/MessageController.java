@@ -52,4 +52,14 @@ public class MessageController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteMessage(@PathVariable int id) {
+        messageService.deleteMessage(id);
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully Deleted Message")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }
