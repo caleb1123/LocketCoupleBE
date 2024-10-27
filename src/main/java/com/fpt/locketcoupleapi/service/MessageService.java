@@ -3,10 +3,12 @@ package com.fpt.locketcoupleapi.service;
 import com.fpt.locketcoupleapi.entity.Message;
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
 
-public interface MessageService {
-    MessageDTO getMessageByPhoto(int photoId);
+import java.util.List;
 
-    MessageDTO getAllMessage();
+public interface MessageService {
+    List<MessageDTO> getMessageByPhoto(int photoId);
+
+    List<MessageDTO> getAllMessage();
 
     MessageDTO createMessage(MessageDTO messageDTO);
 
