@@ -5,6 +5,7 @@ import com.fpt.locketcoupleapi.entity.Message;
 import com.fpt.locketcoupleapi.entity.Photo;
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
 import com.fpt.locketcoupleapi.payload.request.CreateMessageRequest;
+import com.fpt.locketcoupleapi.payload.request.UpdateMessageRequest;
 import com.fpt.locketcoupleapi.repository.MessageRepository;
 import com.fpt.locketcoupleapi.repository.PhotoRepository;
 import com.fpt.locketcoupleapi.service.MessageService;
@@ -109,7 +110,18 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageDTO updateMessage(int messageId) {
-        return null;
+    public MessageDTO updateMessage(UpdateMessageRequest messageRequest) {
+        Message message = messageRepository.findById(messageRequest.getMessageId())
+                .orElseThrow(() -> new RuntimeException("Not found Message!"));
+        message.setMessageContent(messageRequest.getMessageContent());
+        message.setSendDate(LocalDateTime.now());
+
+        Message saved = messageRepository.save(message);
+
+        MessageDTO messageDTO = mapper.map(saved, MessageDTO.class);
+        messageDTO.setPhotoId(saved.getPhoto().getPhotoId());
+        messageDTO.setUserId(saved.getUser().getUserId());
+
+        return messageDTO;
     }
 }
