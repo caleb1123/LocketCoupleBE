@@ -4,6 +4,7 @@ import com.cloudinary.Api;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.payload.DTO.CoupleDTO;
 import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
+import com.fpt.locketcoupleapi.payload.request.UpdateRequest;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
 import com.fpt.locketcoupleapi.payload.response.CoupleResponse;
 import com.fpt.locketcoupleapi.payload.response.SendRequestResponse;
@@ -272,10 +273,10 @@ public class CoupleController {
     }
 
     @PostMapping("/updateCouple")
-    public ResponseEntity<ApiResponse<String>> updateCouple(@RequestBody String coupleName) {
+    public ResponseEntity<ApiResponse<String>> updateCouple(@RequestBody UpdateRequest updateRequest) {
         try {
             // Gọi service để cập nhật tên cặp đôi
-            coupleService.updateCouple(coupleName);
+            coupleService.updateCouple(updateRequest.getCoupleName());
 
             // Tạo phản hồi thành công
             ApiResponse<String> response = ApiResponse.<String>builder()
