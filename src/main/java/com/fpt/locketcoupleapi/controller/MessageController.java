@@ -1,6 +1,7 @@
 package com.fpt.locketcoupleapi.controller;
 
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
+import com.fpt.locketcoupleapi.payload.request.CreateMessageRequest;
 import com.fpt.locketcoupleapi.payload.response.ApiResponse;
 import com.fpt.locketcoupleapi.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,17 @@ public class MessageController {
                 .code(HttpStatus.OK.value())
                 .message("Successfully fetched Message")
                 .data(messageDTOS)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<MessageDTO>> createMessage(@RequestBody CreateMessageRequest messageRequest) {
+        MessageDTO messageDTO = messageService.createMessage(messageRequest);
+        ApiResponse<MessageDTO> response = ApiResponse.<MessageDTO>builder()
+                .code(HttpStatus.CREATED.value())
+                .message("Successfully created Message")
+                .data(messageDTO)
                 .build();
         return ResponseEntity.ok(response);
     }

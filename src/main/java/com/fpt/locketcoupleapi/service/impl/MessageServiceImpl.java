@@ -1,13 +1,19 @@
 package com.fpt.locketcoupleapi.service.impl;
 
+import com.fpt.locketcoupleapi.config.Util;
 import com.fpt.locketcoupleapi.entity.Message;
+import com.fpt.locketcoupleapi.entity.Photo;
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
+import com.fpt.locketcoupleapi.payload.request.CreateMessageRequest;
 import com.fpt.locketcoupleapi.repository.MessageRepository;
+import com.fpt.locketcoupleapi.repository.PhotoRepository;
 import com.fpt.locketcoupleapi.service.MessageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +24,13 @@ public class MessageServiceImpl implements MessageService {
     MessageRepository messageRepository;
 
     @Autowired
+    PhotoRepository photoRepository;
+
+    @Autowired
     ModelMapper mapper;
+
+    @Autowired
+    Util util;
 
 
     @Override
@@ -70,8 +82,22 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageDTO createMessage(MessageDTO messageDTO) {
-        return null;
+    public MessageDTO createMessage(CreateMessageRequest messageRequest) {
+        Message message = new Message();
+        message.setMessageContent(messageRequest.getMessageContent());
+        message.setUser(util.getUserFromAuthentication());
+        message.setSendDate(LocalDateTime.now());
+        Photo photo = photoRepository.findById(messageRequest.getPhotoId())
+                .orElseThrow(() -> new RuntimeException("Not found photo!"));
+        message.setPhoto(photo);
+
+        Message saved = messageRepository.save(message);
+
+        MessageDTO messageDTO = mapper.map(saved, MessageDTO.class);
+        messageDTO.setPhotoId(saved.getPhoto().getPhotoId());
+        messageDTO.setUserId(saved.getUser().getUserId());
+
+        return messageDTO;
     }
 
     @Override
