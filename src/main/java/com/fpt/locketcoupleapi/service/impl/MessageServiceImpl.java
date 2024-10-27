@@ -47,7 +47,26 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageDTO> getAllMessage() {
-        return null;
+        List<Message> messages = messageRepository.findAll();
+        if(messages.isEmpty()){
+            return Collections.emptyList();
+        }
+        List<MessageDTO> messageDTOS = messages.stream()
+                .map(message -> {
+                    MessageDTO messageDTO = mapper.map(message, MessageDTO.class);
+
+                    if (message.getPhoto() != null) {
+                        messageDTO.setPhotoId(message.getPhoto().getPhotoId());
+                    }
+                    if (message.getUser() != null) {
+                        messageDTO.setUserId(message.getUser().getUserId());
+                    }
+
+                    return messageDTO;
+                })
+                .collect(Collectors.toList());
+
+        return messageDTOS;
     }
 
     @Override
