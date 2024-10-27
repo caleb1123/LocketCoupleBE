@@ -21,4 +21,6 @@ public interface CoupleService {
         SendRequestResponse getSendRequest();
 
         CoupleResponse getMyCoupleByComplet();
+
+        void updateCouple(String coupleName);
 }

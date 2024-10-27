@@ -216,5 +216,22 @@ public class CoupleServiceImpl implements CoupleService {
         return coupleResponse;
     }
 
+    @Override
+    public void updateCouple(String coupleName) {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        Couple couple = coupleRepository.findCoupleByUserBoyfriend_UserIdAndStatus(user.getUserId(),EStatus.ACCEPTED);
+        if (couple == null) {
+            couple = coupleRepository.findCoupleByUserGirlfriend_UserIdAndStatus(user.getUserId(),EStatus.ACCEPTED);
+        }
+        if(couple == null) {
+            throw new AppException(ErrorCode.COUPLE_NOT_FOUND);
+        }
+        couple.setCoupleName(coupleName);
+        coupleRepository.save(couple);
+    }
+
 
 }

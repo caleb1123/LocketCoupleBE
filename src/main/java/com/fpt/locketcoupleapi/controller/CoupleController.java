@@ -271,5 +271,39 @@ public class CoupleController {
         }
     }
 
+    @PostMapping("/updateCouple")
+    public ResponseEntity<ApiResponse<String>> updateCouple(@RequestBody String coupleName) {
+        try {
+            // Gọi service để cập nhật tên cặp đôi
+            coupleService.updateCouple(coupleName);
+
+            // Tạo phản hồi thành công
+            ApiResponse<String> response = ApiResponse.<String>builder()
+                    .code(HttpStatus.OK.value())
+                    .message("Updated couple successfully")
+                    .data(null) // Không có dữ liệu trả về
+                    .build();
+
+            // Trả về phản hồi thành công
+            return ResponseEntity.ok(response);
+        } catch (AppException e) {
+            // Tạo phản hồi khi gặp lỗi ứng dụng, ví dụ: cặp đôi không tồn tại
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (Exception e) {
+            // Tạo phản hồi khi gặp lỗi không xác định
+            ApiResponse<String> errorResponse = ApiResponse.<String>builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message("An error occurred")
+                    .data(null)
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
 
 }
