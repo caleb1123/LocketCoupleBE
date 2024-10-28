@@ -7,6 +7,7 @@ import com.fpt.locketcoupleapi.entity.User;
 import com.fpt.locketcoupleapi.exception.AppException;
 import com.fpt.locketcoupleapi.exception.ErrorCode;
 import com.fpt.locketcoupleapi.payload.DTO.MessageDTO;
+import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
 import com.fpt.locketcoupleapi.payload.request.CreateMessageRequest;
 import com.fpt.locketcoupleapi.payload.request.UpdateMessageRequest;
 import com.fpt.locketcoupleapi.repository.MessageRepository;
@@ -56,7 +57,7 @@ public class MessageServiceImpl implements MessageService {
                         messageDTO.setPhotoId(message.getPhoto().getPhotoId());
                     }
                     if (message.getUser() != null) {
-                        messageDTO.setUserId(message.getUser().getUserId());
+                        messageDTO.setUserId(mapper.map(message.getUser(), UserDTO.class));
                     }
 
                     return messageDTO;
@@ -80,7 +81,7 @@ public class MessageServiceImpl implements MessageService {
                         messageDTO.setPhotoId(message.getPhoto().getPhotoId());
                     }
                     if (message.getUser() != null) {
-                        messageDTO.setUserId(message.getUser().getUserId());
+                        messageDTO.setUserId(mapper.map(message.getUser(), UserDTO.class));
                     }
 
                     return messageDTO;
@@ -111,7 +112,7 @@ public class MessageServiceImpl implements MessageService {
 
         MessageDTO messageDTO = mapper.map(saved, MessageDTO.class);
         messageDTO.setPhotoId(saved.getPhoto().getPhotoId());
-        messageDTO.setUserId(saved.getUser().getUserId());
+        messageDTO.setUserId(mapper.map(saved.getUser(), UserDTO.class));
 
         return messageDTO;
     }
@@ -135,7 +136,7 @@ public class MessageServiceImpl implements MessageService {
 
         MessageDTO messageDTO = mapper.map(saved, MessageDTO.class);
         messageDTO.setPhotoId(saved.getPhoto().getPhotoId());
-        messageDTO.setUserId(saved.getUser().getUserId());
+        messageDTO.setUserId(mapper.map(saved.getUser(), UserDTO.class));
 
         return messageDTO;
     }

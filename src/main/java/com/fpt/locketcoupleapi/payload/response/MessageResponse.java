@@ -1,6 +1,7 @@
-package com.fpt.locketcoupleapi.payload.DTO;
+package com.fpt.locketcoupleapi.payload.response;
 
-import jakarta.persistence.Column;
+import com.fpt.locketcoupleapi.entity.User;
+import com.fpt.locketcoupleapi.payload.DTO.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageDTO {
+public class MessageResponse {
      int messageId;
 
      String messageContent;
